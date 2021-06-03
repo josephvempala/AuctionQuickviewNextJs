@@ -4,13 +4,10 @@ import Router from 'next/router';
 import Link from 'next/link';
 
 export default function Home({vehicles}) {
-  const data = vehicles.map((vehicle)=>({
-    ...vehicle,
-    registration : `${vehicle.registrationNumber.state}-${vehicle.registrationNumber.rto}-${vehicle.registrationNumber.series}-${vehicle.registrationNumber.number}`
-  }));
+
   const columns = [
     {
-      name: "name",
+      name: "Name",
       label: "Name",
       options: {
         filter: true,
@@ -18,7 +15,7 @@ export default function Home({vehicles}) {
       },
     },
     {
-      name: "year",
+      name: "Year",
       label: "Year",
       options: {
         filter: true,
@@ -26,7 +23,7 @@ export default function Home({vehicles}) {
       },
     },
     {
-      name: "fuel",
+      name: "Fuel",
       label: "Fuel",
       options: {
         filter: true,
@@ -34,7 +31,7 @@ export default function Home({vehicles}) {
       },
     },
     {
-      name: "registration",
+      name: "RegistrationNumber",
       label: "Registration",
       options: {
         filter: false,
@@ -47,7 +44,7 @@ export default function Home({vehicles}) {
     download: false,
     print:false,
     selectableRows:'none',
-    onRowClick: (rowData, rowMeta) => {let vehicleId = data[rowMeta.dataIndex].id;Router.push(`/vehicles/${vehicleId}`)},
+    onRowClick: (rowData, rowMeta) => {let vehicleId = vehicles[rowMeta.dataIndex]._id;Router.push(`/vehicles/${vehicleId}`)},
   };
   return (
     <>
@@ -66,7 +63,7 @@ export default function Home({vehicles}) {
       </Head>
       <MUIDataTable
         title={"Vehicles List"}
-        data={data}
+        data={vehicles}
         columns={columns}
         options={options}
       />
@@ -75,8 +72,9 @@ export default function Home({vehicles}) {
 }
 
 export const getServerSideProps = async () => {
+  let res;
   try {
-    const res = await fetch(`${process.env.API_IP}/api/vehicle?page=0&limit=999`);
+    res = await fetch(`${process.env.API_IP}/api/vehicle?page=0&limit=999`);
   } catch (error) {
     return{
       props:{

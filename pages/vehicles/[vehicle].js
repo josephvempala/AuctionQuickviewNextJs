@@ -13,7 +13,7 @@ export default function vehicle({vehicle, images}){
         <>
         { vehicle && images ?
             <div className="center">
-                <Image src={images[0].url} onClick={toggleLightbox}  height={500} width={700}/>
+                <img src={images[0].url} onClick={toggleLightbox}  height={500} width={700}/>
                 {islightboxOpen?
                     <Lightbox images={images} onClose={toggleLightbox} keyboardInteraction={true}/>
                     :
@@ -35,14 +35,14 @@ export default function vehicle({vehicle, images}){
                 </thead>
                 <tbody>
                     <tr className="active-row">
-                        <td>{vehicle.name}</td>
-                        <td>{vehicle.year}</td>
-                        <td>{vehicle.registrationNumber.state+'-'+vehicle.registrationNumber.rto+'-'+vehicle.registrationNumber.series+'-'+vehicle.registrationNumber.number+'-'}</td>
-                        <td>{vehicle.fuel}</td>
-                        <td>{vehicle.address}</td>
-                        <td>{vehicle.ownershipStatus}</td>
-                        <td>{vehicle.remarks}</td>
-                        <td>{vehicle.reference}</td>
+                        <td>{vehicle.Name}</td>
+                        <td>{vehicle.Year}</td>
+                        <td>{vehicle.RegistrationNumber}</td>
+                        <td>{vehicle.Fuel}</td>
+                        <td>{vehicle.Address}</td>
+                        <td>{vehicle.OwnershipStatus}</td>
+                        <td>{vehicle.Remarks}</td>
+                        <td>{vehicle.Reference}</td>
                     </tr>
                 </tbody>
             </table>
@@ -55,8 +55,9 @@ export default function vehicle({vehicle, images}){
 }
 
 export const getServerSideProps = async (context) => {
+    let res;
     try{
-        const res = await fetch(`${process.env.API_IP}/api/vehicle/${context.params.vehicle}`);
+        res = await fetch(`${process.env.API_IP}/api/vehicle/${context.params.vehicle}`);
     }
     catch (error) {
         return{
@@ -67,13 +68,15 @@ export const getServerSideProps = async (context) => {
         }
     }
     const data = await res.json();
+    console.log(data);
     const images = [];
-    for(let i=0;i<data.imagesCount;i++){
+    for(let i=0;i<data.PicturesCount;i++){
         images.push({
-            url:`${process.env.API_IP}/api/image/${data.id}/${i}`,
+            url:`${process.env.API_IP}/api/image/${data._id}/${i}`,
             title:`${i}`
         });
     }
+    console.log(images);
     return {
         props : {
             vehicle: data,
