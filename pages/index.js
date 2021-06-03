@@ -75,7 +75,15 @@ export default function Home({vehicles}) {
 }
 
 export const getServerSideProps = async () => {
-  const res = await fetch(`${process.env.API_IP}/api/Vehicle?index=0&limit=999`);
+  try {
+    const res = await fetch(`${process.env.API_IP}/api/vehicle?page=0&limit=999`);
+  } catch (error) {
+    return{
+      props:{
+        vehicles:[]
+      }
+    }
+  }
   const data = await res.json();
   return {
     props: {
