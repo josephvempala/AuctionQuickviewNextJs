@@ -4,7 +4,7 @@ import Image from 'next/image';
 import FourOhFour from '../404';
 
 export default function vehicle({vehicle, images}){ 
-    let [islightboxOpen,setIsLightboxOpen] = useState(false);
+    const [islightboxOpen,setIsLightboxOpen] = useState(false);
     function toggleLightbox()
     {
         setIsLightboxOpen(!islightboxOpen);
@@ -17,8 +17,7 @@ export default function vehicle({vehicle, images}){
                 {islightboxOpen?
                     <Lightbox images={images} onClose={toggleLightbox} keyboardInteraction={true}/>
                     :
-                    <>
-                    </>
+                    <></>
                 }  
                 <table class="styled-table">
                 <thead>
@@ -57,9 +56,11 @@ export default function vehicle({vehicle, images}){
 export const getServerSideProps = async (context) => {
     let res;
     try{
-        res = await fetch(`${process.env.API_IP}/api/vehicle/${context.params.vehicle}`);
+        console.log(`fetching from ${process.env.SERVER_API_IP}`);
+        res = await fetch(`${process.env.SERVER_API_IP}/api/vehicle/${context.params.vehicle}`);
     }
     catch (error) {
+        console.log(error);
         return{
             props:{
                 vehicle:null,
@@ -68,7 +69,6 @@ export const getServerSideProps = async (context) => {
         }
     }
     const data = await res.json();
-    console.log(data);
     const images = [];
     for(let i=0;i<data.PicturesCount;i++){
         images.push({
@@ -76,7 +76,6 @@ export const getServerSideProps = async (context) => {
             title:`${i}`
         });
     }
-    console.log(images);
     return {
         props : {
             vehicle: data,
